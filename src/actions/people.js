@@ -29,18 +29,3 @@ function getListCharactersSuccess( payload ) {
     payload
   }
 }
-
-export function getIndividual( id ) {
-  return ( dispatch, getState ) => {
-    dispatch( beginAjaxCall() );
-    Axios.get(
-      `${ DOMAIN }people/${ id }`
-    ).then( response => {
-      console.log( response, 'get individual' );
-      dispatch( ajaxCallSuccess( 'success' ) );
-    }).catch( error => {
-      console.error( error, 'cannot get individual' );
-      dispatch( ajaxCallError( error ) );
-    });
-  }
-}

@@ -1,26 +1,37 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import _ from 'lodash';
 
 import { getListCharacters } from '../../actions/people';
+import { getFilm, clearFilmArray } from '../../actions/film';
 
 import Loader from '../common/loading';
+import ModalInfo from '../common/modalInfo';
 
 class Home extends Component {
   constructor() {
     super();
     this.state = {
-      loading: false
+      globalLoading: false,
+      characterList: [],
+      extraInfoDisplay: false,
+      foundCharacter: {}
     };
   }
 
   componentWillReceiveProps( nextProps ) {
     if( nextProps.data.ajaxStatusReducer.ajaxCallProgress > 0 ) {
       this.setState({
-        loading: true
+        globalLoading: true
       });
     } else {
       this.setState({
-        loading: false
+        globalLoading: false
+      });
+    }
+    if( nextProps.data.charReducer.characterList.length > 0 ) {
+      this.setState({
+        characterList: nextProps.data.charReducer.characterList
       });
     }
   }
@@ -29,18 +40,54 @@ class Home extends Component {
     this.props.getListCharacters();
   }
 
+  onClickExtraInfo( name ) {
+    let searchItem = _.find( this.state.characterList, function( item ) {
+      return item.name === name
+    });
+    this.props.getFilm( searchItem.films );
+    this.setState({
+      foundCharacter: searchItem,
+      extraInfoDisplay: true
+    });
+  }
+
+  onRequestCloseModal() {
+    this.setState({
+      extraInfoDisplay: false
+    });
+    this.props.clearFilmArray();
+  }
+
   render() {
     return (
       <div className="container">
         <h1>Welcome to Star Wars Information Corner!</h1>
         <ul>
           {
-
+            this.state.characterList.map( data => {
+              return (
+                <li
+                  key={ data.name }
+                  style={{ minHeight: '55px' }}>
+                  <span style={{ marginRight: '10px' }}>{ data.name }</span>
+                  <button
+                    className="btn btn-primary"
+                    onClick={ () => this.onClickExtraInfo( data.name ) }>
+                    Extra Information
+                  </button>
+                </li>
+              )
+            })
           }
         </ul>
 
+        <ModalInfo
+          modalVisible={ this.state.extraInfoDisplay }
+          onRequestClose={ () => this.onRequestCloseModal() }
+          foundCharacter={ this.state.foundCharacter } />
+
         <Loader
-          showLoader={ this.state.loading } />
+          showLoader={ this.state.globalLoading } />
       </div>
     )
   }
@@ -53,5 +100,7 @@ function mapStateToProps( state ) {
 }
 
 export default connect( mapStateToProps, {
-  getListCharacters
+  getListCharacters,
+  getFilm,
+  clearFilmArray
 })( Home );

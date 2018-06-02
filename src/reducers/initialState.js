@@ -3,5 +3,6 @@ export default {
   ajaxErrorMessage: '',
   ajaxSuccessMessage: '',
 
-  characterList: []
+  characterList: [],
+  retrievedFilmNames: []
 };
