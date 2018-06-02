@@ -4,6 +4,8 @@ import _ from 'lodash';
 
 import { getListCharacters } from '../../actions/people';
 import { getFilm, clearFilmArray } from '../../actions/film';
+import { getHomeworld, cleanHomeworld } from '../../actions/homeworld';
+import { getSpecies, cleanSpecies } from '../../actions/species';
 
 import Loader from '../common/loading';
 import ModalInfo from '../common/modalInfo';
@@ -45,6 +47,8 @@ class Home extends Component {
       return item.name === name
     });
     this.props.getFilm( searchItem.films );
+    this.props.getHomeworld( searchItem.homeworld );
+    this.props.getSpecies( searchItem.species[0] );
     this.setState({
       foundCharacter: searchItem,
       extraInfoDisplay: true
@@ -56,6 +60,8 @@ class Home extends Component {
       extraInfoDisplay: false
     });
     this.props.clearFilmArray();
+    this.props.cleanHomeworld();
+    this.props.cleanSpecies();
   }
 
   render() {
@@ -87,7 +93,9 @@ class Home extends Component {
           foundCharacter={ this.state.foundCharacter } />
 
         <Loader
-          showLoader={ this.state.globalLoading } />
+          showLoader={ this.state.globalLoading }
+          height={ 150 }
+          width={ 150 } />
       </div>
     )
   }
@@ -102,5 +110,9 @@ function mapStateToProps( state ) {
 export default connect( mapStateToProps, {
   getListCharacters,
   getFilm,
-  clearFilmArray
+  clearFilmArray,
+  getHomeworld,
+  cleanHomeworld,
+  getSpecies,
+  cleanSpecies
 })( Home );

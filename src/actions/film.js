@@ -1,11 +1,6 @@
 import Axios from 'axios';
 
 import { GET_FILM, CLEAR_FILM } from './types';
-import {
-  beginAjaxCall,
-  ajaxCallSuccess,
-  ajaxCallError
-} from './ajax';
 
 export function getFilm( urlList ) {
   return ( dispatch, getState ) => {

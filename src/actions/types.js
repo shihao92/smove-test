@@ -6,3 +6,9 @@ export const GET_LIST_CHAR = 'GET_LIST_CHAR';
 
 export const GET_FILM = 'GET_FILM';
 export const CLEAR_FILM = 'CLEAR_FILM';
+
+export const GET_HOMEWORLD = 'GET_HOMEWORLD';
+export const CLEAN_HOMEWORLD = 'CLEAN_HOMEWORLD';
+
+export const GET_SPECIES = 'GET_SPECIES';
+export const CLEAN_SPECIES = 'CLEAN_SPECIES';

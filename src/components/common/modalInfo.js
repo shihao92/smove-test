@@ -1,22 +1,47 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
+import Loading from './loading';
+
 class ModalInfo extends Component {
   constructor() {
     super();
     this.state = {
       smallLoading: false,
-      filmInfo: []
+      filmInfo: [],
+      homeworld: '',
+      species: ''
     };
   }
 
   componentWillReceiveProps( nextProps ) {
     this.setState({
-      filmInfo: nextProps.data.filmReducer.retrievedFilmNames
+      filmInfo: nextProps.data.filmReducer.retrievedFilmNames,
+      homeworld: nextProps.data.homeworldReducer.homeworld,
+      species: nextProps.data.speciesReducer.species
     });
   }
 
   _renderCharacterInformation() {
+    const showLoaderFilmName = param => {
+      if( param.length === 0 ) {
+        return (
+          <Loading
+            showLoader={ true }
+            height={ 80 }
+            width={ 80 } />
+        )
+      } else {
+        return (
+          param.map( item => {
+            return (
+              <li key={ item }>{ item }</li>
+            )
+          })
+        )
+      }
+    };
+
     return (
       <div className="modal-body">
         <p>Name: { this.props.foundCharacter.name }</p>
@@ -31,14 +56,12 @@ class ModalInfo extends Component {
           <p>Film(s) involved:</p>
           <ul>
           {
-            this.state.filmInfo.map( item => {
-              return (
-                <li key={ item }>{ item }</li>
-              )
-            })
+            showLoaderFilmName( this.state.filmInfo )
           }
           </ul>
         </div>
+        <p>Homeworld: { this.state.homeworld }</p>
+        <p>Species: { this.state.species }</p>
       </div>
     )
   }

@@ -4,5 +4,9 @@ export default {
   ajaxSuccessMessage: '',
 
   characterList: [],
-  retrievedFilmNames: []
+  retrievedFilmNames: [],
+
+  homeworld: '',
+
+  species: ''
 };
