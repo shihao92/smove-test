@@ -6,6 +6,8 @@ import { getListCharacters } from '../../actions/people';
 import { getFilm, clearFilmArray } from '../../actions/film';
 import { getHomeworld, cleanHomeworld } from '../../actions/homeworld';
 import { getSpecies, cleanSpecies } from '../../actions/species';
+import { getVehicles, cleanVehicle } from '../../actions/vehicle';
+import { getStarships, cleanStarship } from '../../actions/starship';
 
 import Loader from '../common/loading';
 import ModalInfo from '../common/modalInfo';
@@ -49,6 +51,8 @@ class Home extends Component {
     this.props.getFilm( searchItem.films );
     this.props.getHomeworld( searchItem.homeworld );
     this.props.getSpecies( searchItem.species[0] );
+    this.props.getVehicles( searchItem.vehicles );
+    this.props.getStarships( searchItem.starships );
     this.setState({
       foundCharacter: searchItem,
       extraInfoDisplay: true
@@ -62,6 +66,8 @@ class Home extends Component {
     this.props.clearFilmArray();
     this.props.cleanHomeworld();
     this.props.cleanSpecies();
+    this.props.cleanVehicle();
+    this.props.cleanStarship();
   }
 
   render() {
@@ -114,5 +120,9 @@ export default connect( mapStateToProps, {
   getHomeworld,
   cleanHomeworld,
   getSpecies,
-  cleanSpecies
+  cleanSpecies,
+  getVehicles,
+  cleanVehicle,
+  getStarships,
+  cleanStarship
 })( Home );

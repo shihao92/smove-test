@@ -22,8 +22,9 @@ export default function ajaxStatusReducer( state = initialState, action ) {
 
     case AJAX_CALL_SUCCESS:
       return {
-        ...state
-
+        ...state,
+        ajaxCallProgress: state.ajaxCallProgress - 1,
+        ajaxErrorMessage: action.payload
       };
 
     default: return state;

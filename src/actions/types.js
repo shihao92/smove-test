@@ -12,3 +12,9 @@ export const CLEAN_HOMEWORLD = 'CLEAN_HOMEWORLD';
 
 export const GET_SPECIES = 'GET_SPECIES';
 export const CLEAN_SPECIES = 'CLEAN_SPECIES';
+
+export const GET_VEHICLE = 'GET_VEHICLE';
+export const CLEAN_VEHICLE = 'CLEAN_VEHICLE';
+
+export const GET_STARSHIP = 'GET_STARSHIP';
+export const CLEAN_STARSHIP = 'CLEAN_STARSHIP';

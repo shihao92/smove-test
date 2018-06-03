@@ -8,5 +8,9 @@ export default {
 
   homeworld: '',
 
-  species: ''
+  species: '',
+
+  retrievedVehiclesNames: [],
+
+  retrievedStarshipsNames: []
 };

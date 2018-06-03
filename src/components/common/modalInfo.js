@@ -10,7 +10,9 @@ class ModalInfo extends Component {
       smallLoading: false,
       filmInfo: [],
       homeworld: '',
-      species: ''
+      species: '',
+      vehicleInfo: [],
+      starshipInfo: []
     };
   }
 
@@ -18,7 +20,9 @@ class ModalInfo extends Component {
     this.setState({
       filmInfo: nextProps.data.filmReducer.retrievedFilmNames,
       homeworld: nextProps.data.homeworldReducer.homeworld,
-      species: nextProps.data.speciesReducer.species
+      species: nextProps.data.speciesReducer.species,
+      vehicleInfo: nextProps.data.vehicleReducer.retrievedVehiclesNames,
+      starshipInfo: nextProps.data.starshipReducer.retrievedStarshipsNames
     });
   }
 
@@ -42,6 +46,18 @@ class ModalInfo extends Component {
       }
     };
 
+    const showContent = param => {
+      if( param.length === 0 ) {
+        return ( <li>N/A</li> )
+      } else {
+        return(
+          param.map( item => {
+            return ( <li key={ item }>{ item }</li> )
+          })
+        )
+      }
+    };
+
     return (
       <div className="modal-body">
         <p>Name: { this.props.foundCharacter.name }</p>
@@ -55,13 +71,29 @@ class ModalInfo extends Component {
         <div>
           <p>Film(s) involved:</p>
           <ul>
-          {
-            showLoaderFilmName( this.state.filmInfo )
-          }
+            {
+              showLoaderFilmName( this.state.filmInfo )
+            }
           </ul>
         </div>
         <p>Homeworld: { this.state.homeworld }</p>
         <p>Species: { this.state.species }</p>
+        <div>
+          <p>Vehicles:</p>
+          <ul>
+            {
+              showContent( this.state.vehicleInfo )
+            }
+          </ul>
+        </div>
+        <div>
+          <p>Starships:</p>
+          <ul>
+            {
+              showContent( this.state.starshipInfo )
+            }
+          </ul>
+        </div>
       </div>
     )
   }
