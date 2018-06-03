@@ -18,6 +18,8 @@ export function ajaxCallError( payload ) {
 }
 
 export function ajaxCallSuccess( payload ) {
-  type: AJAX_CALL_SUCCESS,
-  payload
+  return {
+    type: AJAX_CALL_SUCCESS,
+    payload
+  }
 }

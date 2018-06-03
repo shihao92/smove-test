@@ -15,8 +15,8 @@ class Loading extends Component {
       <div className={ this.props.showLoader ? '' : 'hidden' }>
         <ReactLottie
           options={ options }
-          height={ 150 }
-          width={ 150 }>
+          height={ this.props.height }
+          width={ this.props.width }>
         </ReactLottie>
       </div>
     )

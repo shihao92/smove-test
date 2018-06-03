@@ -3,5 +3,14 @@ export default {
   ajaxErrorMessage: '',
   ajaxSuccessMessage: '',
 
-  characterList: []
+  characterList: [],
+  retrievedFilmNames: [],
+
+  homeworld: '',
+
+  species: '',
+
+  retrievedVehiclesNames: [],
+
+  retrievedStarshipsNames: []
 };
