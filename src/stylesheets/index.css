@@ -2,6 +2,12 @@
 .hidden {
   display: none; }
 
+.ml-auto {
+  margin-left: auto; }
+
+.mr-auto {
+  margin-right: auto; }
+
 body {
   font-family: 'Quicksand', sans-serif;
   font-weight: '300'; }

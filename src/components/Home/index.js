@@ -1,102 +1,150 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import _ from 'lodash';
-
-import { getListCharacters } from '../../actions/people';
-import { getFilm, clearFilmArray } from '../../actions/film';
-import { getHomeworld, cleanHomeworld } from '../../actions/homeworld';
-import { getSpecies, cleanSpecies } from '../../actions/species';
-import { getVehicles, cleanVehicle } from '../../actions/vehicle';
-import { getStarships, cleanStarship } from '../../actions/starship';
+import TimeModifier from '../../utils/timeModifier';
 
 import Loader from '../common/loading';
-import ModalInfo from '../common/modalInfo';
+import CustomMap from '../common/map';
+import CustomTable from './components/table';
+
+import { getBookings } from '../../actions/booking';
+
+import { URL } from '../../config';
 
 class Home extends Component {
   constructor() {
     super();
     this.state = {
       globalLoading: false,
-      characterList: [],
-      extraInfoDisplay: false,
-      foundCharacter: {}
+      bookings: [],
+      viewMode: '',
+      coordinatesType: 'dropoff',
+      selectedCoordinate: {}
     };
   }
 
   componentWillReceiveProps( nextProps ) {
-    if( nextProps.data.ajaxStatusReducer.ajaxCallProgress > 0 ) {
+    if( nextProps.data.bookingReducer.bookings ) {
+      TimeModifier( nextProps.data.bookingReducer.bookings );
       this.setState({
-        globalLoading: true
-      });
-    } else {
-      this.setState({
-        globalLoading: false
-      });
-    }
-    if( nextProps.data.charReducer.characterList.length > 0 ) {
-      this.setState({
-        characterList: nextProps.data.charReducer.characterList
+        globalLoading: false,
+        bookings: nextProps.data.bookingReducer.bookings,
+        viewMode: 'map'
       });
     }
   }
 
   componentDidMount() {
-    this.props.getListCharacters();
+    this.setState({
+      globalLoading: true
+    });
+    this.props.getBookings( URL );
   }
 
-  onClickExtraInfo( name ) {
-    let searchItem = _.find( this.state.characterList, function( item ) {
-      return item.name === name
-    });
-    this.props.getFilm( searchItem.films );
-    this.props.getHomeworld( searchItem.homeworld );
-    this.props.getSpecies( searchItem.species[0] );
-    this.props.getVehicles( searchItem.vehicles );
-    this.props.getStarships( searchItem.starships );
+  onClickMapMarker( item ) {
+    this.setState({ selectedCoordinate: item });
+  }
+
+  selectBookingType( type ) {
     this.setState({
-      foundCharacter: searchItem,
-      extraInfoDisplay: true
+      coordinatesType: type
     });
   }
 
-  onRequestCloseModal() {
-    this.setState({
-      extraInfoDisplay: false
-    });
-    this.props.clearFilmArray();
-    this.props.cleanHomeworld();
-    this.props.cleanSpecies();
-    this.props.cleanVehicle();
-    this.props.cleanStarship();
+  onPickupMapMounted( data ) {
+    // console.log( data )
+  }
+
+  onDropoffMapMounted( data ) {
+    // console.log( data )
+  }
+
+  _renderModeSelectionButton() {
+    return (
+      <div style={{ marginBottom: '16px' }}>
+        <button
+          className="btn btn-primary btn-lg mr-10"
+          style={{ marginRight: '10px' }}
+          onClick={ () => {
+            this.setState({ viewMode: 'map' });
+            this.props.getBookings( URL );
+          }}>Map Mode</button>
+        <button
+          className="btn btn-primary btn-lg"
+          onClick={ () => this.setState({ viewMode: 'table' }) }>Table Mode</button>
+      </div>
+    )
+  }
+
+  _renderTitle() {
+    return (
+      <div>
+        <h2>Current View Mode: { this.state.viewMode }</h2>
+      </div>
+    )
+  }
+
+  _renderBookingDetails() {
+    if( this.state.selectedCoordinate.user ) {
+      return (
+        <div style={{ marginTop: '16px' }}>
+          <h3>Selected booking information</h3>
+          <p>User name: { this.state.selectedCoordinate.user.name }</p>
+          <p>Booking Start Time: { this.state.selectedCoordinate.book_start }</p>
+          <p>Booking End Time: { this.state.selectedCoordinate.book_end }</p>
+          <p>Car License Plate: { this.state.selectedCoordinate.car.licence_plate }</p>
+          <p>Pickup Place: { this.state.selectedCoordinate.pickup.code }</p>
+          <p>Dropoff Place: { this.state.selectedCoordinate.dropoff.code }</p>
+        </div>
+      )
+    } else {
+      return (
+        <div style={{ marginTop: '16px' }}>
+          <h3>Click on the marker on map to view booking details.</h3>
+        </div>
+      )
+    }
   }
 
   render() {
     return (
-      <div className="container">
-        <h1>Welcome to Star Wars Information Corner!</h1>
-        <ul>
-          {
-            this.state.characterList.map( data => {
-              return (
-                <li
-                  key={ data.name }
-                  style={{ minHeight: '55px' }}>
-                  <span style={{ marginRight: '10px' }}>{ data.name }</span>
-                  <button
-                    className="btn btn-primary"
-                    onClick={ () => this.onClickExtraInfo( data.name ) }>
-                    Extra Information
-                  </button>
-                </li>
-              )
-            })
-          }
-        </ul>
+      <div className="container" style={{ paddingTop: '60px', height: '200vh' }}>
+        <h1>Welcome to Smove booking logging application</h1>
 
-        <ModalInfo
-          modalVisible={ this.state.extraInfoDisplay }
-          onRequestClose={ () => this.onRequestCloseModal() }
-          foundCharacter={ this.state.foundCharacter } />
+        { this._renderModeSelectionButton() }
+
+        { this._renderTitle() }
+
+        {/* Google Map Representation */}
+        <div style={{ display: this.state.viewMode === 'map' ? 'block' : 'none' }}>
+          <div>
+            <button
+              className="btn btn-success btn-md"
+              style={{ marginRight: '10px' }}
+              onClick={ () => this.selectBookingType( 'pickup' ) }>Pickup Locations</button>
+            <button
+              className="btn btn-success btn-md"
+              onClick={ () => this.selectBookingType( 'dropoff' ) }>Dropoff Locations</button>
+            <h5 style={{ marginTop: '16px' }}>Current view: { this.state.coordinatesType }</h5>
+          </div>
+          <CustomMap
+            isMarkerShown={ true }
+            googleMapURL="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places"
+            loadingElement={<div style={{ height: `100%` }} />}
+            containerElement={<div style={{ height: `600px` }} />}
+            mapElement={<div style={{ height: `100%` }} />}
+            markerCoordinates={ this.state.bookings }
+            coordinatesType={ this.state.coordinatesType }
+            onClickMarker={ item => this.onClickMapMarker( item ) }
+            onPickupMapMounted={ data => this.onPickupMapMounted( data ) }
+            onDropoffMapMounted={ data => this.onDropoffMapMounted( data ) } />
+          { this._renderBookingDetails() }
+        </div>
+
+        {/* Data Table Representation */}
+        <div style={{ display: this.state.viewMode === 'table' ? 'block' : 'none' }}>
+          <CustomTable
+            data={ this.state.bookings } />
+        </div>
 
         <Loader
           showLoader={ this.state.globalLoading }
@@ -114,15 +162,5 @@ function mapStateToProps( state ) {
 }
 
 export default connect( mapStateToProps, {
-  getListCharacters,
-  getFilm,
-  clearFilmArray,
-  getHomeworld,
-  cleanHomeworld,
-  getSpecies,
-  cleanSpecies,
-  getVehicles,
-  cleanVehicle,
-  getStarships,
-  cleanStarship
+  getBookings
 })( Home );
