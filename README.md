@@ -8,6 +8,7 @@ To start the app
 
 Things to take note of
 1. Google map is having bugs taking in params which are more than certain amount (might because no proper API key is being placed in yet)
-2. There might be some bugs because this is coding in rush ( I'm still working on other projects at this moment so sorry about that ><" )
+2. Due to the CORS issues, I'm technically coding this by disabling the web security on the chrome part.
+3. There might be some bugs because this is coding in rush ( I'm still working on other projects at this moment so sorry about that ><" )
 
 Enjoy!
